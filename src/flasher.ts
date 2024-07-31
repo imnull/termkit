@@ -9,8 +9,8 @@ export const CURSOR_STYLES = {
     reset: '\x1b[ q',
 }
 
-export type TCursorStyle = keyof typeof CURSOR_STYLES
-export const overwrite = (msg: string, cursor: TCursorStyle = 'reset', backLines: number = 1) => {
+type TCursorStyle = keyof typeof CURSOR_STYLES
+const overwrite = (msg: string, cursor: TCursorStyle = 'reset', backLines: number = 1) => {
     for(let i = 0; i < backLines; i++) {
         process.stdout.write('\x1b[2K');
         if (i < backLines - 1) {
@@ -22,10 +22,6 @@ export const overwrite = (msg: string, cursor: TCursorStyle = 'reset', backLines
     process.stdout.write(CURSOR_STYLES[cursor]);
 }
 
-export const resetInput = () => {
-    overwrite('', 'reset')
-}
-
 export class TermFlasher {
     private readonly history: string[]
     private readonly historyLimit: number = 10
@@ -34,17 +30,31 @@ export class TermFlasher {
     constructor() { 
         this.history = []
     }
-    log(msg: string, cursor: TCursorStyle = 'reset') {
-        const last = this.history[0] || ''
-        const backLines = last.split('\n').length
-        if (this.cursorInNewLine && msg && !msg.endsWith('\n')) {
-            msg += '\n'
-        }
-        overwrite(msg, cursor, backLines)
+
+    private renderHistory(msg: string) {
         this.history.unshift(msg)
         while(this.history.length > this.historyLimit) {
             this.history.pop()
         }
+    }
+    private getBackLines() {    
+        const last = this.history[0] || ''
+        const backLines = last.split('\n').length
+        return backLines
+    }
+
+    private formatMsg(msg: string) {
+        if (this.cursorInNewLine && msg && !msg.endsWith('\n')) {
+            msg += '\n'
+        }
+        return msg
+    }
+
+    log(msg: string, cursor: TCursorStyle = 'reset') {
+        const formatedMsg = this.formatMsg(msg)
+        const backLines = this.getBackLines()
+        overwrite(formatedMsg, cursor, backLines)
+        this.renderHistory(msg)
     }
     reset() {
         this.log('', 'reset')

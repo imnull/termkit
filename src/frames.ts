@@ -1,4 +1,4 @@
-export abstract class TextWaiting {
+export abstract class TextFrames {
     protected index: number = 0;
     protected step: number = 1
     private readonly frames: string[]
@@ -8,8 +8,11 @@ export abstract class TextWaiting {
         }
         this.frames = frames
     }
+    count() {
+        return this.frames.length
+    }
     progress() {
-        this.index = (this.index + this.step) % this.frames.length
+        this.index = (this.index + this.step) % this.count()
     }
     toString() {
         return this.render()
@@ -21,14 +24,14 @@ export abstract class TextWaiting {
     }
 }
 
-export class WaitingRolling extends TextWaiting {
+export class RollingFrames extends TextFrames {
     constructor() {
         super(['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'])
     }
 }
 
-export class WaitingDots extends TextWaiting {
+export class DotsFrames extends TextFrames {
     constructor() {
-        super(['   ', '.  ', '.. ', '...'])
+        super(['   ', '.  ', '.. ', '...', ' ..', '  .'])
     }
 }

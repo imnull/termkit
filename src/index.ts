@@ -1,4 +1,4 @@
 export * from './color'
 export * from './flasher'
-export * from './waiting'
+export * from './frames'
 export * from './progress'

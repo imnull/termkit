@@ -147,9 +147,3 @@ export class ColorText {
         console.log(this.render(msg))
     }
 }
-
-// console.log(colors.blue(' abc ', { background: 'brightBlue' }))
-
-// const txt = new ColorText({ color: 'red', background: 'brightBlack' })
-// txt.log(' xyz ')
-// console.log(txt.render(' abc '))
